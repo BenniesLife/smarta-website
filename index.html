@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smarta — Smart Water Management</title>
+    <meta name="description" content="South Africa's most advanced smart water pump management platform. Real-time monitoring, remote control, mesh networking, and intelligent reporting.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --blue-50:#eff6ff;--blue-100:#dbeafe;--blue-200:#bfdbfe;--blue-400:#60a5fa;
+            --blue-500:#3b82f6;--blue-600:#2563eb;--blue-700:#1d4ed8;--blue-800:#1e40af;--blue-900:#1e3a5f;
+            --cyan-400:#22d3ee;--cyan-500:#06b6d4;
+            --green-400:#4ade80;--green-500:#22c55e;
+            --amber-400:#fbbf24;--amber-500:#f59e0b;
+            --red-400:#f87171;--red-500:#ef4444;
+            --slate-50:#f8fafc;--slate-100:#f1f5f9;--slate-200:#e2e8f0;--slate-300:#cbd5e1;
+            --slate-400:#94a3b8;--slate-500:#64748b;--slate-600:#475569;--slate-700:#334155;
+            --slate-800:#1e293b;--slate-900:#0f172a;
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:var(--slate-800);background:#fff;line-height:1.6;-webkit-font-smoothing:antialiased}
+
+        nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--slate-200);transition:box-shadow .3s}
+        nav.scrolled{box-shadow:0 1px 12px rgba(0,0,0,.08)}
+        .nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:64px}
+        .nav-logo{font-weight:800;font-size:1.4rem;color:var(--blue-700);text-decoration:none;letter-spacing:-.5px}
+        .nav-logo span{color:var(--cyan-500)}
+        .nav-links{display:flex;gap:32px;align-items:center}
+        .nav-links a{text-decoration:none;color:var(--slate-600);font-size:.9rem;font-weight:500;transition:color .2s}
+        .nav-links a:hover{color:var(--blue-600)}
+        .nav-cta{background:var(--blue-600)!important;color:#fff!important;padding:8px 20px;border-radius:8px;font-weight:600;transition:background .2s}
+        .nav-cta:hover{background:var(--blue-700)!important}
+        .nav-toggle{display:none;cursor:pointer;background:none;border:none;padding:8px}
+        .nav-toggle svg{width:24px;height:24px;stroke:var(--slate-700)}
+
+        .hero{padding:140px 24px 80px;background:linear-gradient(135deg,var(--blue-900) 0%,var(--slate-900) 100%);color:#fff;position:relative;overflow:hidden}
+        .hero::before{content:'';position:absolute;top:-50%;right:-20%;width:800px;height:800px;background:radial-gradient(circle,rgba(34,211,238,.12) 0%,transparent 70%);pointer-events:none}
+        .hero::after{content:'';position:absolute;bottom:-30%;left:-10%;width:600px;height:600px;background:radial-gradient(circle,rgba(59,130,246,.1) 0%,transparent 70%);pointer-events:none}
+        .hero-inner{max-width:1200px;margin:0 auto;position:relative;z-index:1}
+        .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);padding:6px 16px;border-radius:100px;font-size:.85rem;font-weight:500;margin-bottom:24px;color:var(--cyan-400)}
+        .hero-badge .dot{width:8px;height:8px;background:var(--green-400);border-radius:50%;animation:pulse 2s infinite}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+        .hero h1{font-size:clamp(2.5rem,5vw,4rem);font-weight:800;line-height:1.1;margin-bottom:24px;letter-spacing:-1.5px;max-width:700px}
+        .hero h1 .highlight{background:linear-gradient(90deg,var(--cyan-400),var(--blue-400));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .hero p{font-size:1.2rem;color:rgba(255,255,255,.7);max-width:560px;margin-bottom:40px;line-height:1.7}
+        .hero-buttons{display:flex;gap:16px;flex-wrap:wrap}
+        .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:10px;font-size:1rem;font-weight:600;text-decoration:none;transition:all .2s;border:none;cursor:pointer}
+        .btn-primary{background:var(--blue-500);color:#fff}
+        .btn-primary:hover{background:var(--blue-600);transform:translateY(-1px)}
+        .btn-secondary{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2)}
+        .btn-secondary:hover{background:rgba(255,255,255,.15)}
+
+        .stats-bar{background:#fff;border-bottom:1px solid var(--slate-200);padding:32px 24px}
+        .stats-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:32px;text-align:center}
+        .stat-number{font-size:2.2rem;font-weight:800;color:var(--blue-700);letter-spacing:-1px}
+        .stat-label{font-size:.85rem;color:var(--slate-500);font-weight:500;margin-top:4px}
+
+        section{padding:96px 24px}
+        .section-inner{max-width:1200px;margin:0 auto}
+        .section-label{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--blue-600);margin-bottom:12px}
+        .section-title{font-size:clamp(1.8rem,3.5vw,2.5rem);font-weight:800;color:var(--slate-900);letter-spacing:-1px;margin-bottom:16px;line-height:1.2}
+        .section-subtitle{font-size:1.1rem;color:var(--slate-500);max-width:640px;line-height:1.7}
+
+        .features-section{background:var(--slate-50)}
+        .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:56px}
+        .feature-card{background:#fff;border:1px solid var(--slate-200);border-radius:16px;padding:32px;transition:all .25s}
+        .feature-card:hover{border-color:var(--blue-200);box-shadow:0 8px 30px rgba(37,99,235,.08);transform:translateY(-2px)}
+        .feature-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:20px}
+        .feature-icon.blue{background:var(--blue-100)}.feature-icon.cyan{background:#cffafe}.feature-icon.green{background:#dcfce7}
+        .feature-icon.amber{background:#fef3c7}.feature-icon.red{background:#fee2e2}.feature-icon.purple{background:#ede9fe}
+        .feature-card h3{font-size:1.1rem;font-weight:700;color:var(--slate-800);margin-bottom:8px}
+        .feature-card p{font-size:.92rem;color:var(--slate-500);line-height:1.6}
+
+        .mesh-section{background:var(--slate-900);color:#fff}
+        .mesh-section .section-label{color:var(--cyan-400)}
+        .mesh-section .section-title{color:#fff}
+        .mesh-section .section-subtitle{color:rgba(255,255,255,.6)}
+        .mesh-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:56px;align-items:center}
+        .mesh-features{display:flex;flex-direction:column;gap:24px}
+        .mesh-feature{display:flex;gap:16px;align-items:flex-start}
+        .mesh-feature-icon{width:40px;height:40px;border-radius:10px;background:rgba(34,211,238,.15);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+        .mesh-feature h4{font-size:1rem;font-weight:600;margin-bottom:4px}
+        .mesh-feature p{font-size:.88rem;color:rgba(255,255,255,.55);line-height:1.5}
+        .mesh-visual{background:linear-gradient(135deg,rgba(34,211,238,.08),rgba(59,130,246,.08));border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:48px;text-align:center}
+        .mesh-diagram{display:flex;flex-direction:column;align-items:center;gap:20px}
+        .mesh-node{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:12px 20px;border-radius:12px;font-size:.85rem;color:rgba(255,255,255,.8);width:100%;max-width:280px}
+        .mesh-node .node-icon{font-size:1.2rem}.mesh-node .node-status{margin-left:auto;width:8px;height:8px;background:var(--green-400);border-radius:50%}
+        .mesh-connector{width:2px;height:20px;background:linear-gradient(to bottom,var(--cyan-400),transparent);opacity:.4}
+        .mesh-node.small{max-width:200px;padding:10px 16px;font-size:.8rem}
+
+        .platform-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:56px}
+        .platform-card{border:1px solid var(--slate-200);border-radius:20px;overflow:hidden}
+        .platform-card-header{padding:32px 32px 0}
+        .platform-card-header h3{font-size:1.3rem;font-weight:700;margin-bottom:8px}
+        .platform-card-header p{font-size:.92rem;color:var(--slate-500);line-height:1.6}
+        .platform-card-body{padding:24px 32px 32px}
+        .platform-feature-list{list-style:none;display:flex;flex-direction:column;gap:12px}
+        .platform-feature-list li{display:flex;align-items:center;gap:10px;font-size:.92rem;color:var(--slate-600)}
+        .platform-feature-list .check{width:20px;height:20px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--green-500);flex-shrink:0}
+
+        .scada-section{background:var(--slate-50)}
+        .scada-showcase{margin-top:48px;background:var(--slate-900);border-radius:20px;padding:48px;color:#fff}
+        .scada-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:12px;margin-top:32px}
+        .scada-site{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;text-align:center}
+        .scada-site-name{font-size:.7rem;font-weight:600;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
+        .scada-value{font-size:1.3rem;font-weight:700;margin-bottom:2px}
+        .scada-unit{font-size:.7rem;color:rgba(255,255,255,.4)}
+        .scada-status{display:inline-block;padding:3px 10px;border-radius:100px;font-size:.65rem;font-weight:600;margin-top:10px;text-transform:uppercase;letter-spacing:.5px}
+        .status-ok{background:rgba(34,197,94,.15);color:var(--green-400)}
+        .status-standby{background:rgba(96,165,250,.15);color:var(--blue-400)}
+        .status-warning{background:rgba(251,191,36,.15);color:var(--amber-400)}
+
+        .verticals-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:56px}
+        .vertical-card{border:1px solid var(--slate-200);border-radius:16px;padding:28px;text-align:center;transition:all .25s}
+        .vertical-card:hover{border-color:var(--blue-200);box-shadow:0 8px 30px rgba(37,99,235,.06)}
+        .vertical-icon{font-size:2rem;margin-bottom:16px}
+        .vertical-card h3{font-size:1rem;font-weight:700;margin-bottom:8px}
+        .vertical-card p{font-size:.85rem;color:var(--slate-500);line-height:1.5}
+
+        .comparison-section{background:var(--blue-50)}
+        .comparison-table{margin-top:48px;background:#fff;border-radius:16px;overflow:hidden;border:1px solid var(--slate-200)}
+        .comparison-table table{width:100%;border-collapse:collapse}
+        .comparison-table th,.comparison-table td{padding:16px 20px;text-align:left;font-size:.9rem;border-bottom:1px solid var(--slate-100)}
+        .comparison-table th{background:var(--slate-50);font-weight:600;color:var(--slate-700);font-size:.8rem;text-transform:uppercase;letter-spacing:.5px}
+        .comparison-table th:first-child{width:35%}
+        .comparison-table td:first-child{font-weight:500;color:var(--slate-700)}
+        .comparison-table .yes{color:var(--green-500);font-weight:600}
+        .comparison-table .no{color:var(--slate-300)}
+        .comparison-table .smarta-col{background:var(--blue-50);font-weight:600;color:var(--blue-700)}
+        .comparison-table th.smarta-col{background:var(--blue-100);color:var(--blue-800)}
+
+        .cta-section{background:linear-gradient(135deg,var(--blue-700),var(--blue-900));color:#fff;text-align:center}
+        .cta-section .section-title{color:#fff}
+        .cta-section .section-subtitle{color:rgba(255,255,255,.7);margin:0 auto 40px}
+        .cta-buttons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+
+        footer{background:var(--slate-900);color:rgba(255,255,255,.5);padding:48px 24px}
+        .footer-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px}
+        .footer-logo{font-weight:800;font-size:1.2rem;color:rgba(255,255,255,.8)}
+        .footer-logo span{color:var(--cyan-500)}
+        .footer-links{display:flex;gap:24px}
+        .footer-links a{color:rgba(255,255,255,.5);text-decoration:none;font-size:.85rem;transition:color .2s}
+        .footer-links a:hover{color:rgba(255,255,255,.8)}
+        .footer-credit{font-size:.8rem;color:rgba(255,255,255,.3)}
+        .footer-credit a{color:rgba(255,255,255,.5);text-decoration:none}
+
+        .data-fields{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:48px}
+        .data-field{background:var(--slate-50);border:1px solid var(--slate-200);border-radius:10px;padding:16px;display:flex;align-items:center;gap:10px}
+        .data-field-icon{font-size:1.1rem;width:32px;text-align:center}
+        .data-field span{font-size:.85rem;font-weight:500;color:var(--slate-700)}
+
+        @media(max-width:1024px){.features-grid{grid-template-columns:repeat(2,1fr)}.scada-grid{grid-template-columns:repeat(4,1fr)}.verticals-grid{grid-template-columns:repeat(2,1fr)}}
+        @media(max-width:768px){.nav-links{display:none}.nav-links.open{display:flex;flex-direction:column;position:absolute;top:64px;left:0;right:0;background:#fff;padding:24px;border-bottom:1px solid var(--slate-200);box-shadow:0 8px 20px rgba(0,0,0,.08)}.nav-toggle{display:block}.hero{padding:120px 24px 60px}.stats-inner{grid-template-columns:repeat(2,1fr);gap:24px}.features-grid{grid-template-columns:1fr}.mesh-grid{grid-template-columns:1fr}.platform-grid{grid-template-columns:1fr}.scada-grid{grid-template-columns:repeat(2,1fr)}.verticals-grid{grid-template-columns:1fr}section{padding:64px 24px}.comparison-table{overflow-x:auto}}
+    </style>
+</head>
+<body>
+    <nav id="navbar">
+        <div class="nav-inner">
+            <a href="#" class="nav-logo">SMAR<span>TA</span></a>
+            <div class="nav-links" id="navLinks">
+                <a href="#features">Features</a>
+                <a href="#mesh">Mesh Network</a>
+                <a href="#platform">Platform</a>
+                <a href="#scada">SCADA</a>
+                <a href="#sectors">Sectors</a>
+                <a href="#compare">Compare</a>
+                <a href="#demo" class="nav-cta">View Demo</a>
+            </div>
+            <button class="nav-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')" aria-label="Menu">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-inner">
+            <div class="hero-badge"><span class="dot"></span>Monitoring 395+ sites across South Africa</div>
+            <h1>Smart Water Management,<br><span class="highlight">Built for Africa</span></h1>
+            <p>Real-time borehole and reservoir monitoring. Remote pump control. Mesh-connected sensor networks. One platform to manage your entire water infrastructure.</p>
+            <div class="hero-buttons">
+                <a href="#demo" class="btn btn-primary"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21"/></svg>Try the Demo</a>
+                <a href="#features" class="btn btn-secondary">See What's Possible</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="stats-bar">
+        <div class="stats-inner">
+            <div><div class="stat-number">395+</div><div class="stat-label">Active Monitoring Sites</div></div>
+            <div><div class="stat-number">65</div><div class="stat-label">Sensor Data Fields</div></div>
+            <div><div class="stat-number">24/7</div><div class="stat-label">Automated Monitoring</div></div>
+            <div><div class="stat-number">5+</div><div class="stat-label">Years in Production</div></div>
+        </div>
+    </div>
+
+    <section class="features-section" id="features">
+        <div class="section-inner">
+            <div class="section-label">Platform Features</div>
+            <div class="section-title">Everything you need to manage water infrastructure</div>
+            <div class="section-subtitle">From a single borehole to a municipal water network with hundreds of sites — one platform covers it all.</div>
+            <div class="features-grid">
+                <div class="feature-card"><div class="feature-icon blue">💧</div><h3>Real-Time Water Monitoring</h3><p>Live water levels, flow rates, pressure readings, and pump status. Updated every few minutes, accessible from any device.</p></div>
+                <div class="feature-card"><div class="feature-icon cyan">🔌</div><h3>Remote Pump Control</h3><p>Turn pumps on, off, or set to schedule mode from your phone. One tap to protect a R200,000 pump from running dry.</p></div>
+                <div class="feature-card"><div class="feature-icon green">⚡</div><h3>Power & Cost Analytics</h3><p>Monitor voltage, current, and power consumption. Configure your Eskom tariff and see exactly what pumping costs you in Rands.</p></div>
+                <div class="feature-card"><div class="feature-icon amber">🔔</div><h3>Smart Alarms & Triggers</h3><p>Custom alarm thresholds with push notifications. Automated triggers across sites — "if reservoir drops, start borehole pump."</p></div>
+                <div class="feature-card"><div class="feature-icon red">❤️</div><h3>Pump Health Monitoring</h3><p>Track actual vs theoretical pump curves. Detect degradation before failure. Predictive maintenance that saves pumps and money.</p></div>
+                <div class="feature-card"><div class="feature-icon purple">📊</div><h3>Professional Reports</h3><p>Automated weekly and monthly PDF reports emailed to stakeholders. Branded, multi-page, with charts, maps, and health indicators.</p></div>
+                <div class="feature-card"><div class="feature-icon blue">🌧️</div><h3>Weather & Rainfall Integration</h3><p>Automatic daily rainfall data for every site. Correlate pump performance with weather patterns and geohydrology.</p></div>
+                <div class="feature-card"><div class="feature-icon cyan">📅</div><h3>Pump Scheduling</h3><p>Visual 7-day schedule editor. Run pumps during off-peak tariff hours. Automate irrigation windows. Save on electricity.</p></div>
+                <div class="feature-card"><div class="feature-icon green">📱</div><h3>Native Mobile App</h3><p>Full-featured iOS and Android app. Not a web wrapper — a real native app with push notifications, offline detection, and smooth performance.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="data">
+        <div class="section-inner">
+            <div class="section-label">Sensor Capabilities</div>
+            <div class="section-title">65 data fields per logger</div>
+            <div class="section-subtitle">Our hardware monitors everything. One device, one subscription, complete visibility.</div>
+            <div class="data-fields">
+                <div class="data-field"><span class="data-field-icon">💧</span><span>Water Level</span></div>
+                <div class="data-field"><span class="data-field-icon">🌊</span><span>Flow Rate</span></div>
+                <div class="data-field"><span class="data-field-icon">🔵</span><span>Pressure</span></div>
+                <div class="data-field"><span class="data-field-icon">🌡️</span><span>Temperature</span></div>
+                <div class="data-field"><span class="data-field-icon">💨</span><span>Humidity</span></div>
+                <div class="data-field"><span class="data-field-icon">⚡</span><span>Voltage (3-phase)</span></div>
+                <div class="data-field"><span class="data-field-icon">🔋</span><span>Current (3-phase)</span></div>
+                <div class="data-field"><span class="data-field-icon">📈</span><span>Power</span></div>
+                <div class="data-field"><span class="data-field-icon">🔌</span><span>Energy (kWh)</span></div>
+                <div class="data-field"><span class="data-field-icon">🧪</span><span>pH Level</span></div>
+                <div class="data-field"><span class="data-field-icon">🔬</span><span>Electrical Conductivity</span></div>
+                <div class="data-field"><span class="data-field-icon">🫧</span><span>Dissolved Oxygen</span></div>
+                <div class="data-field"><span class="data-field-icon">📍</span><span>GPS Location</span></div>
+                <div class="data-field"><span class="data-field-icon">⚖️</span><span>Weight</span></div>
+                <div class="data-field"><span class="data-field-icon">📏</span><span>Distance</span></div>
+                <div class="data-field"><span class="data-field-icon">🏎️</span><span>Speed</span></div>
+                <div class="data-field"><span class="data-field-icon">📳</span><span>Vibration</span></div>
+                <div class="data-field"><span class="data-field-icon">🎛️</span><span>Relay Control</span></div>
+                <div class="data-field"><span class="data-field-icon">🚨</span><span>Alarm Inputs</span></div>
+                <div class="data-field"><span class="data-field-icon">🌧️</span><span>Rainfall</span></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="mesh-section" id="mesh">
+        <div class="section-inner">
+            <div class="section-label">Next-Generation Hardware</div>
+            <div class="section-title">Mesh-Connected Sensor Networks</div>
+            <div class="section-subtitle">Our next-generation Mesh Remote Monitor uses LoRa mesh networking to connect dozens of sensors across kilometres — even where there's no cellular coverage.</div>
+            <div class="mesh-grid">
+                <div class="mesh-features">
+                    <div class="mesh-feature"><div class="mesh-feature-icon">📡</div><div><h4>Meshtastic LoRa Mesh</h4><p>Self-forming, self-healing sensor networks. Nodes relay data through each other. No cell tower required.</p></div></div>
+                    <div class="mesh-feature"><div class="mesh-feature-icon">🔀</div><div><h4>Multi-Connectivity</h4><p>2G/4G cellular, WiFi, and LoRa mesh in a single device. Automatic failover between connection types.</p></div></div>
+                    <div class="mesh-feature"><div class="mesh-feature-icon">🧩</div><div><h4>Low-Cost Sensor Nodes</h4><p>Built on Raspberry Pi Pico W. Deploy cheap mesh nodes alongside premium loggers. 10+ monitoring points through one gateway.</p></div></div>
+                    <div class="mesh-feature"><div class="mesh-feature-icon">🏔️</div><div><h4>Works Anywhere</h4><p>Perfect for remote farms, game reserves, and rural infrastructure where cellular coverage is limited or non-existent.</p></div></div>
+                    <div class="mesh-feature"><div class="mesh-feature-icon">🔧</div><div><h4>Field-Proven</h4><p>Over a year of testing in real industrial environments. R150,000+ invested in hardware development and field trials.</p></div></div>
+                </div>
+                <div class="mesh-visual">
+                    <div class="mesh-diagram">
+                        <div class="mesh-node"><span class="node-icon">🌐</span><span>Gateway Logger (4G/WiFi)</span><span class="node-status"></span></div>
+                        <div class="mesh-connector"></div>
+                        <div style="display:flex;gap:8px;width:100%;justify-content:center;align-items:flex-start">
+                            <div style="display:flex;flex-direction:column;align-items:center;gap:8px;flex:1">
+                                <div class="mesh-connector"></div>
+                                <div class="mesh-node small"><span class="node-icon">💧</span><span>Borehole 1</span><span class="node-status"></span></div>
+                            </div>
+                            <div style="display:flex;flex-direction:column;align-items:center;gap:8px;flex:1">
+                                <div class="mesh-connector"></div>
+                                <div class="mesh-node small"><span class="node-icon">🏗️</span><span>Reservoir</span><span class="node-status"></span></div>
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:8px;width:100%;justify-content:center;align-items:flex-start">
+                            <div style="display:flex;flex-direction:column;align-items:center;gap:8px;flex:1">
+                                <div class="mesh-connector"></div>
+                                <div class="mesh-node small"><span class="node-icon">🌡️</span><span>Weather</span><span class="node-status"></span></div>
+                            </div>
+                            <div style="display:flex;flex-direction:column;align-items:center;gap:8px;flex:1">
+                                <div class="mesh-connector"></div>
+                                <div class="mesh-node small"><span class="node-icon">🧪</span><span>Water Quality</span><span class="node-status"></span></div>
+                            </div>
+                            <div style="display:flex;flex-direction:column;align-items:center;gap:8px;flex:1">
+                                <div class="mesh-connector"></div>
+                                <div class="mesh-node small"><span class="node-icon">⚡</span><span>Power</span><span class="node-status"></span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <p style="margin-top:24px;font-size:.8rem;color:rgba(255,255,255,.4)">LoRa mesh range: up to 10km+ line of sight</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="platform">
+        <div class="section-inner">
+            <div class="section-label">The Platform</div>
+            <div class="section-title">Web portal + native mobile app</div>
+            <div class="section-subtitle">Access your water infrastructure from any device. Full-featured web portal for office use, native mobile app for the field.</div>
+            <div class="platform-grid">
+                <div class="platform-card">
+                    <div class="platform-card-header"><h3>🖥️ Web Portal</h3><p>Full management dashboard with SCADA screens, interactive diagrams, charts, billing, and admin tools.</p></div>
+                    <div class="platform-card-body">
+                        <ul class="platform-feature-list">
+                            <li><span class="check">✓</span>SCADA control centre screens</li>
+                            <li><span class="check">✓</span>Interactive borehole & reservoir diagrams</li>
+                            <li><span class="check">✓</span>4K-optimised for wall-mounted displays</li>
+                            <li><span class="check">✓</span>Company & user management</li>
+                            <li><span class="check">✓</span>Billing portal with tiered pricing</li>
+                            <li><span class="check">✓</span>Data export & reporting</li>
+                            <li><span class="check">✓</span>Role-based access control</li>
+                            <li><span class="check">✓</span>Real-time 15-second refresh</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="platform-card">
+                    <div class="platform-card-header"><h3>📱 Mobile App (iOS & Android)</h3><p>Native app with push notifications, offline detection, and live visualisations — not a web wrapper.</p></div>
+                    <div class="platform-card-body">
+                        <ul class="platform-feature-list">
+                            <li><span class="check">✓</span>Live borehole & reservoir animations</li>
+                            <li><span class="check">✓</span>One-tap pump control</li>
+                            <li><span class="check">✓</span>Push notifications (Firebase)</li>
+                            <li><span class="check">✓</span>Visual pump scheduler</li>
+                            <li><span class="check">✓</span>5 chart types for data analysis</li>
+                            <li><span class="check">✓</span>Alarm & trigger configuration</li>
+                            <li><span class="check">✓</span>File storage per site</li>
+                            <li><span class="check">✓</span>Offline detection & alerts</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="scada-section" id="scada">
+        <div class="section-inner">
+            <div class="section-label">Industrial Monitoring</div>
+            <div class="section-title">SCADA-grade control centres — in a browser tab</div>
+            <div class="section-subtitle">Traditional SCADA systems cost R180,000 to R1.8 million+ per deployment. Ours runs in any web browser for a fraction of the cost.</div>
+            <div class="scada-showcase">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                    <div>
+                        <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.4);font-weight:600">Water Management Control Centre</div>
+                        <div style="font-size:1.1rem;font-weight:700;margin-top:4px">Multi-Site Overview</div>
+                    </div>
+                    <div style="display:flex;gap:8px;align-items:center">
+                        <span style="width:8px;height:8px;background:#4ade80;border-radius:50%;animation:pulse 2s infinite"></span>
+                        <span style="font-size:.8rem;color:rgba(255,255,255,.5)">Live — refreshing every 15s</span>
+                    </div>
+                </div>
+                <div class="scada-grid">
+                    <div class="scada-site"><div class="scada-site-name">Borehole 1</div><div class="scada-value" style="color:var(--green-400)">42.3m</div><div class="scada-unit">water level</div><div class="scada-status status-ok">Running</div></div>
+                    <div class="scada-site"><div class="scada-site-name">Borehole 2</div><div class="scada-value" style="color:var(--green-400)">38.7m</div><div class="scada-unit">water level</div><div class="scada-status status-ok">Running</div></div>
+                    <div class="scada-site"><div class="scada-site-name">Borehole 3</div><div class="scada-value" style="color:var(--blue-400)">51.2m</div><div class="scada-unit">water level</div><div class="scada-status status-standby">Standby</div></div>
+                    <div class="scada-site"><div class="scada-site-name">Reservoir A</div><div class="scada-value" style="color:var(--green-400)">78%</div><div class="scada-unit">capacity</div><div class="scada-status status-ok">Filling</div></div>
+                    <div class="scada-site"><div class="scada-site-name">Reservoir B</div><div class="scada-value" style="color:var(--amber-400)">34%</div><div class="scada-unit">capacity</div><div class="scada-status status-warning">Low</div></div>
+                    <div class="scada-site"><div class="scada-site-name">Pump Station</div><div class="scada-value" style="color:var(--green-400)">4.2</div><div class="scada-unit">bar pressure</div><div class="scada-status status-ok">Normal</div></div>
+                    <div class="scada-site"><div class="scada-site-name">Flow Meter</div><div class="scada-value" style="color:var(--green-400)">12.8</div><div class="scada-unit">kL/hr</div><div class="scada-status status-ok">Active</div></div>
+                </div>
+                <div style="margin-top:24px;padding-top:20px;border-top:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px">
+                    <div style="font-size:.8rem;color:rgba(255,255,255,.4)"><span style="color:var(--green-400)">●</span> OK &nbsp;&nbsp;<span style="color:var(--blue-400)">●</span> Standby &nbsp;&nbsp;<span style="color:var(--amber-400)">●</span> Warning &nbsp;&nbsp;<span style="color:var(--red-400)">●</span> Alarm</div>
+                    <div style="font-size:.8rem;color:rgba(255,255,255,.4)">Conflict detection • Lost comms alerts • Fullscreen mode • 4K optimised</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="sectors">
+        <div class="section-inner">
+            <div class="section-label">Applications</div>
+            <div class="section-title">Built for water. Ready for more.</div>
+            <div class="section-subtitle">Our core is water management, but the platform and hardware support any remote monitoring application.</div>
+            <div class="verticals-grid">
+                <div class="vertical-card"><div class="vertical-icon">🚰</div><h3>Municipal Water</h3><p>Multi-site borehole and reservoir management. SCADA screens, automated reporting, pump scheduling.</p></div>
+                <div class="vertical-card"><div class="vertical-icon">🌾</div><h3>Agriculture</h3><p>Irrigation monitoring, borehole management, water quality, weather integration. Works off-grid with mesh.</p></div>
+                <div class="vertical-card"><div class="vertical-icon">🦁</div><h3>Game Farms</h3><p>Remote water points, solar pump monitoring, perimeter vibration detection. Mesh covers vast properties.</p></div>
+                <div class="vertical-card"><div class="vertical-icon">🏭</div><h3>Industrial</h3><p>3-phase power monitoring, pump health analytics, automated fault detection, compliance reporting.</p></div>
+                <div class="vertical-card"><div class="vertical-icon">🏘️</div><h3>Estates & Complexes</h3><p>Shared water infrastructure management. Per-unit monitoring, leak detection, automated reservoir control.</p></div>
+                <div class="vertical-card"><div class="vertical-icon">🧪</div><h3>Water Quality</h3><p>pH, electrical conductivity, dissolved oxygen monitoring. Automated alerts for out-of-spec conditions.</p></div>
+                <div class="vertical-card"><div class="vertical-icon">🌍</div><h3>Environmental</h3><p>Groundwater level tracking, rainfall correlation, geohydrology data collection. Long-term trend analysis.</p></div>
+                <div class="vertical-card"><div class="vertical-icon">☀️</div><h3>Solar & Off-Grid</h3><p>Monitor solar-powered pump systems. Power generation, battery state, pump performance — all in one view.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="comparison-section" id="compare">
+        <div class="section-inner">
+            <div class="section-label">Why Smarta</div>
+            <div class="section-title">More features. Less cost. Proudly South African.</div>
+            <div class="section-subtitle">Compare us to the alternatives. We built this for African conditions — not adapted from a European or Australian product.</div>
+            <div class="comparison-table">
+                <table>
+                    <thead><tr><th>Feature</th><th class="smarta-col">Smarta + Mistbits</th><th>Traditional SCADA</th><th>Imported IoT</th></tr></thead>
+                    <tbody>
+                        <tr><td>Cloud dashboard + mobile app</td><td class="smarta-col yes">✓</td><td class="no">✗ Usually local only</td><td class="yes">✓ Some</td></tr>
+                        <tr><td>Remote pump control</td><td class="smarta-col yes">✓</td><td class="yes">✓</td><td class="no">✗ Most monitor-only</td></tr>
+                        <tr><td>Mesh networking (LoRa)</td><td class="smarta-col yes">✓ Meshtastic</td><td class="no">✗ Wired / radio</td><td class="no">✗ Cellular only</td></tr>
+                        <tr><td>Water quality (pH, EC, DO)</td><td class="smarta-col yes">✓</td><td class="yes">✓ Extra cost</td><td class="no">✗ Rare</td></tr>
+                        <tr><td>3-phase power monitoring</td><td class="smarta-col yes">✓ Built in</td><td class="yes">✓ Separate unit</td><td class="no">✗</td></tr>
+                        <tr><td>Electricity cost tracking</td><td class="smarta-col yes">✓ Eskom tariffs</td><td class="no">✗</td><td class="no">✗</td></tr>
+                        <tr><td>Pump health analytics</td><td class="smarta-col yes">✓ Predictive</td><td class="no">✗</td><td class="no">✗</td></tr>
+                        <tr><td>Automated PDF reports</td><td class="smarta-col yes">✓ Weekly + monthly</td><td class="no">✗ Manual</td><td class="no">✗ Basic CSV</td></tr>
+                        <tr><td>Multi-site SCADA screens</td><td class="smarta-col yes">✓ Browser-based</td><td class="yes">✓ R180k–R1.8M+</td><td class="no">✗</td></tr>
+                        <tr><td>Cross-site automation triggers</td><td class="smarta-col yes">✓</td><td class="yes">✓ Complex setup</td><td class="no">✗</td></tr>
+                        <tr><td>Works off-grid / remote</td><td class="smarta-col yes">✓ Mesh + 2G/4G</td><td class="no">✗ Needs infrastructure</td><td class="no">✗ Needs 4G/WiFi</td></tr>
+                        <tr><td>Local support (South Africa)</td><td class="smarta-col yes">✓ SA-based team</td><td class="yes">✓ Some</td><td class="no">✗ Import + remote</td></tr>
+                        <tr><td>Typical monthly cost per site</td><td class="smarta-col" style="color:var(--green-500);font-weight:700">From R250/mo</td><td>R3,000–10,000+/mo</td><td>R500–3,600+/mo</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section" id="demo">
+        <div class="section-inner">
+            <div class="section-title">See it in action</div>
+            <div class="section-subtitle">Explore our live demo portal. Click "Demo" on the login page to see real data, real dashboards, and real capabilities.</div>
+            <div class="cta-buttons">
+                <a href="https://www.smartaonline.app" target="_blank" class="btn btn-primary" style="background:#fff;color:var(--blue-700)">Launch Demo Portal →</a>
+                <a href="mailto:info@smarta.co.za" class="btn btn-secondary">Contact Sales</a>
+            </div>
+            <p style="margin-top:40px;font-size:.85rem;color:rgba(255,255,255,.5)">Powered by <strong>Mistbits</strong> — South African IoT engineering since 2013</p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-inner">
+            <div><div class="footer-logo">SMAR<span>TA</span></div><div style="font-size:.8rem;margin-top:4px">Smart Water Management</div></div>
+            <div class="footer-links">
+                <a href="#features">Features</a>
+                <a href="#mesh">Mesh Network</a>
+                <a href="#platform">Platform</a>
+                <a href="#scada">SCADA</a>
+                <a href="https://www.smartaonline.app" target="_blank">Demo</a>
+                <a href="mailto:info@smarta.co.za">Contact</a>
+            </div>
+            <div class="footer-credit">Technology by <a href="https://mistbits.com" target="_blank">Mistbits (PTY) LTD</a> · Est. 2013</div>
+        </div>
+    </footer>
+
+    <script>
+        const nav=document.getElementById('navbar');
+        window.addEventListener('scroll',()=>{nav.classList.toggle('scrolled',window.scrollY>10)});
+        document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t){t.scrollIntoView({behavior:'smooth',block:'start'});document.getElementById('navLinks').classList.remove('open')}})});
+        const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)'}})},{threshold:.1});
+        document.querySelectorAll('.feature-card,.vertical-card,.mesh-feature,.data-field').forEach(el=>{el.style.opacity='0';el.style.transform='translateY(20px)';el.style.transition='opacity .5s,transform .5s';observer.observe(el)});
+    </script>
+</body>
+</html>
